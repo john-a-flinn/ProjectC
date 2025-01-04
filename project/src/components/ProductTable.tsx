@@ -32,14 +32,13 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     size: true,
   });
 
-  // Dynamically filter jobs based on visible columns and search query
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
     const filtered = joblist.filter((job) =>
       Object.entries(job)
-        .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns]) // Only search visible columns
+        .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns])
         .some(([_, value]) =>
           value?.toString().toLowerCase().includes(query)
         )
@@ -47,7 +46,6 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     setFilteredJobs(filtered);
   };
 
-  // Toggle the visibility of a column
   const toggleColumn = (column: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => ({
       ...prev,
@@ -57,11 +55,10 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
 
   return (
     <div style={{ margin: '20px 0' }}>
-      {/* Search Bar */}
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input
           type="text"
-          placeholder="Search by visible columns"
+          placeholder="Search by visible fields"
           value={searchQuery}
           onChange={handleSearch}
           style={{
@@ -74,7 +71,6 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         />
       </div>
 
-      {/* Table */}
       <div style={{ overflowX: 'auto' }}>
         <table
           style={{
@@ -86,53 +82,52 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         >
           <thead>
             <tr>
-              {Object.entries(visibleColumns).map(
-                ([key, isVisible]) =>
-                  isVisible && (
-                    <th
-                      key={key}
-                      style={{
-                        padding: '8px',
-                        borderBottom: '2px solid #000',
-                        textAlign: 'center',
-                        width: '150px',
-                      }}
-                    >
-                      <button
-                        onClick={() => toggleColumn(key as keyof typeof visibleColumns)}
-                        style={{
-                          border: 'none',
-                          background: 'none',
-                          cursor: 'pointer',
-                          fontWeight: 'bold',
-                        }}
-                      >
-                        {key.toUpperCase()}
-                      </button>
-                    </th>
-                  )
-              )}
+              {Object.keys(visibleColumns).map((key) => (
+                <th
+                  key={key}
+                  style={{
+                    padding: '8px',
+                    borderBottom: '2px solid #000',
+                    textAlign: 'center',
+                    width: '150px',
+                  }}
+                >
+                  <button
+                    onClick={() => toggleColumn(key as keyof typeof visibleColumns)}
+                    style={{
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {key.toUpperCase()} {visibleColumns[key as keyof typeof visibleColumns] ? '⬆' : '⬇'}
+                  </button>
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {filteredJobs.map((job) => (
               <tr key={job.id}>
-                {Object.entries(visibleColumns).map(
-                  ([key, isVisible]) =>
-                    isVisible && (
-                      <td
-                        key={key}
-                        style={{
-                          padding: '8px',
-                          borderBottom: '1px solid #ddd',
-                          textAlign: 'center',
-                          width: '150px',
-                        }}
-                      >
-                        {job[key as keyof Job] || 'N/A'}
-                      </td>
-                    )
-                )}
+                {Object.keys(visibleColumns).map((key) => (
+                  <td
+                    key={key}
+                    style={{
+                      padding: '8px',
+                      borderBottom: '1px solid #ddd',
+                      textAlign: 'center',
+                      width: '150px',
+                      visibility: visibleColumns[key as keyof typeof visibleColumns]
+                        ? 'visible'
+                        : 'hidden',
+                    }}
+                  >
+                    {visibleColumns[key as keyof typeof visibleColumns]
+                      ? job[key as keyof Job] || 'N/A'
+                      : ''}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
