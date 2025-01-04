@@ -38,6 +38,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
 
     const filtered = joblist.filter((job) =>
       Object.entries(job)
+        // Include only visible columns in the search
         .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns])
         .some(([_, value]) =>
           value?.toString().toLowerCase().includes(query)
@@ -123,9 +124,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                         : 'hidden',
                     }}
                   >
-                    {visibleColumns[key as keyof typeof visibleColumns]
-                      ? job[key as keyof Job] || 'N/A'
-                      : ''}
+                    {job[key as keyof Job] || 'N/A'}
                   </td>
                 ))}
               </tr>
