@@ -1,45 +1,19 @@
 import { prisma } from '@/lib/prisma';
-
+import ProductTable from '@/components/ProductTable'; // Adjust the path as needed
+import Header from '@/components/Header';
 export default async function Page() {
-  // Fetch data from both tables
-  const jobs = await prisma.joblist.findMany();
-
-  console.log('Fetched Jobs:', jobs);
+  // Fetch data from the joblist table
+  const joblist = await prisma.joblist.findMany();
 
   return (
     <main>
       <h1>Data from Database</h1>
-
       <section>
-        <h2>Jobs</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>MFR</th>
-              <th>Type Name</th>
-              <th>Type ID</th>
-              <th>Style Name</th>
-              <th>Style ID</th>
-              <th>Color Number</th>
-              <th>Color Name</th>
-              <th>Size</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.map((job) => (
-              <tr key={job.id}>
-                <td>{job.mfr}</td>
-                <td>{job.type_name}</td>
-                <td>{job.type_id}</td>
-                <td>{job.style_name || 'N/A'}</td>
-                <td>{job.style_id || 'N/A'}</td>
-                <td>{job.color_number || 'N/A'}</td>
-                <td>{job.colorname || 'N/A'}</td>
-                <td>{job.size || 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <h2>Job List</h2>
+        {/* Pass the fetched joblist data to ProductTable */}
+        <Header/>
+        <ProductTable joblist={joblist} />
+        
       </section>
     </main>
   );

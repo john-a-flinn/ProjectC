@@ -14,7 +14,7 @@ model joblist {
   style_name   String? @db.VarChar(50)
   style_id     String? @db.VarChar(50)
   color_number Int?
-  colorname    String? @db.VarChar(50)
+  color_name    String? @db.VarChar(50)
   size         String? @db.VarChar(50)
   id           Int     @id @default(autoincrement())
 }
