@@ -37,9 +37,11 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     setSearchQuery(query);
 
     const filtered = joblist.filter((job) =>
-      Object.values(job).some((value) =>
-        value?.toString().toLowerCase().includes(query)
-      )
+      Object.entries(job)
+        .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns])
+        .some(([_, value]) =>
+          value?.toString().toLowerCase().includes(query)
+        )
     );
     setFilteredJobs(filtered);
   };
@@ -53,11 +55,10 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
 
   return (
     <div style={{ margin: '20px 0' }}>
-      {/* Search Bar */}
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input
           type="text"
-          placeholder="Search by any field besides type and color number"
+          placeholder="Search by visible fields"
           value={searchQuery}
           onChange={handleSearch}
           style={{
@@ -70,7 +71,6 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         />
       </div>
 
-      {/* Job List Table */}
       <div style={{ overflowX: 'auto' }}>
         <table
           style={{
@@ -89,7 +89,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                     padding: '8px',
                     borderBottom: '2px solid #000',
                     textAlign: 'center',
-                    width: '150px', // Fixed column width
+                    width: '150px',
                   }}
                 >
                   <button
@@ -117,13 +117,12 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                       padding: '8px',
                       borderBottom: '1px solid #ddd',
                       textAlign: 'center',
-                      width: '150px', // Fixed column width
+                      width: '150px',
                       visibility: visibleColumns[key as keyof typeof visibleColumns]
                         ? 'visible'
                         : 'hidden',
                     }}
                   >
-                    {/* Render content only if visible, otherwise empty cell */}
                     {visibleColumns[key as keyof typeof visibleColumns]
                       ? job[key as keyof Job] || 'N/A'
                       : ''}
