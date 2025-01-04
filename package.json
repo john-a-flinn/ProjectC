@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@prisma/client": "^6.1.0",
+    "pg": "^8.13.1",
+    "prisma": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "prisma": {
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
+  }
+}
