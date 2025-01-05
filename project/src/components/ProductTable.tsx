@@ -63,14 +63,14 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newJob),
+        body: JSON.stringify(newJob), // Do not include `id` here
       });
-
+  
       if (response.ok) {
         const createdJob = await response.json();
         setJobs((prev) => [...prev, createdJob]);
         setFilteredJobs((prev) => [...prev, createdJob]);
-        setNewJob({ id: jobs.length + 2 });
+        setNewJob({}); // Reset newJob fields
       }
     }
   };
