@@ -19,8 +19,13 @@ type Props = {
 };
 
 const ProductTable: React.FC<Props> = ({ joblist }) => {
+  const [jobs, setJobs] = useState<Job[]>(joblist);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState(joblist);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [newJob, setNewJob] = useState<Partial<Job>>({
+    id: jobs.length + 1,
+  });
   const [visibleColumns, setVisibleColumns] = useState({
     mfr: true,
     type_name: true,
@@ -36,9 +41,8 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
-    const filtered = joblist.filter((job) =>
+    const filtered = jobs.filter((job) =>
       Object.entries(job)
-        // Include only visible columns in the search
         .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns])
         .some(([_, value]) =>
           value?.toString().toLowerCase().includes(query)
@@ -54,8 +58,38 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     }));
   };
 
+  const handleAddJob = () => {
+    if (newJob.mfr && newJob.type_name) {
+      setJobs((prev) => [...prev, { ...newJob, id: prev.length + 1 } as Job]);
+      setFilteredJobs((prev) => [...prev, { ...newJob, id: prev.length + 1 } as Job]);
+      setNewJob({ id: jobs.length + 2 });
+    }
+  };
+
+  const handleEditJob = (job: Job) => {
+    setEditingJob(job);
+  };
+
+  const handleSaveEdit = () => {
+    if (editingJob) {
+      setJobs((prev) =>
+        prev.map((job) => (job.id === editingJob.id ? editingJob : job))
+      );
+      setFilteredJobs((prev) =>
+        prev.map((job) => (job.id === editingJob.id ? editingJob : job))
+      );
+      setEditingJob(null);
+    }
+  };
+
+  const handleDeleteJob = (id: number) => {
+    setJobs((prev) => prev.filter((job) => job.id !== id));
+    setFilteredJobs((prev) => prev.filter((job) => job.id !== id));
+  };
+
   return (
     <div style={{ margin: '20px 0' }}>
+      {/* Search Bar */}
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input
           type="text"
@@ -72,6 +106,29 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         />
       </div>
 
+      {/* Add Job Form */}
+      <div style={{ marginBottom: '20px' }}>
+        <h3>Add New Job</h3>
+        <input
+          type="text"
+          placeholder="Manufacturer"
+          value={newJob.mfr || ''}
+          onChange={(e) =>
+            setNewJob((prev) => ({ ...prev, mfr: e.target.value }))
+          }
+        />
+        <input
+          type="text"
+          placeholder="Type Name"
+          value={newJob.type_name || ''}
+          onChange={(e) =>
+            setNewJob((prev) => ({ ...prev, type_name: e.target.value }))
+          }
+        />
+        <button onClick={handleAddJob}>Add Job</button>
+      </div>
+
+      {/* Table */}
       <div style={{ overflowX: 'auto' }}>
         <table
           style={{
@@ -90,7 +147,6 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                     padding: '8px',
                     borderBottom: '2px solid #000',
                     textAlign: 'center',
-                    width: '150px',
                   }}
                 >
                   <button
@@ -106,6 +162,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                   </button>
                 </th>
               ))}
+              <th style={{ padding: '8px', borderBottom: '2px solid #000' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -118,20 +175,43 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                       padding: '8px',
                       borderBottom: '1px solid #ddd',
                       textAlign: 'center',
-                      width: '150px',
-                      visibility: visibleColumns[key as keyof typeof visibleColumns]
-                        ? 'visible'
-                        : 'hidden',
                     }}
                   >
                     {job[key as keyof Job] || 'N/A'}
                   </td>
                 ))}
+                <td style={{ textAlign: 'center' }}>
+                  <button onClick={() => handleEditJob(job)}>Edit</button>
+                  <button onClick={() => handleDeleteJob(job.id)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* Edit Job Form */}
+      {editingJob && (
+        <div style={{ marginTop: '20px' }}>
+          <h3>Edit Job</h3>
+          <input
+            type="text"
+            value={editingJob.mfr || ''}
+            onChange={(e) =>
+              setEditingJob((prev) => ({ ...prev!, mfr: e.target.value }))
+            }
+          />
+          <input
+            type="text"
+            value={editingJob.type_name || ''}
+            onChange={(e) =>
+              setEditingJob((prev) => ({ ...prev!, type_name: e.target.value }))
+            }
+          />
+          <button onClick={handleSaveEdit}>Save</button>
+          <button onClick={() => setEditingJob(null)}>Cancel</button>
+        </div>
+      )}
     </div>
   );
 };
