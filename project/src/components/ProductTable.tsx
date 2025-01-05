@@ -218,6 +218,28 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
           </tbody>
         </table>
       </div>
+            {/* Edit Job Form */}
+            {editingJob && (
+        <div style={{ marginTop: '20px' }}>
+          <h3>Edit Job</h3>
+          <input
+            type="text"
+            value={editingJob.mfr || ''}
+            onChange={(e) =>
+              setEditingJob((prev) => ({ ...prev!, mfr: e.target.value }))
+            }
+          />
+          <input
+            type="text"
+            value={editingJob.type_name || ''}
+            onChange={(e) =>
+              setEditingJob((prev) => ({ ...prev!, type_name: e.target.value }))
+            }
+          />
+          <button onClick={handleSaveEdit}>Save</button>
+          <button onClick={() => setEditingJob(null)}>Cancel</button>
+        </div>
+      )}
     </div>
   );
 };
