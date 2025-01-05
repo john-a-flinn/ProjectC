@@ -202,18 +202,20 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
           <tbody>
             {filteredJobs.map((job) => (
               <tr key={job.id}>
-                {Object.keys(visibleColumns).map((key) => (
-                  <td
-                    key={key}
-                    style={{
-                      padding: '8px',
-                      borderBottom: '1px solid #ddd',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {job[key as keyof Job] || 'N/A'}
-                  </td>
-                ))}
+                {Object.keys(visibleColumns).map((key) =>
+                  visibleColumns[key as keyof typeof visibleColumns] ? (
+                    <td
+                      key={key}
+                      style={{
+                        padding: '8px',
+                        borderBottom: '1px solid #ddd',
+                        textAlign: 'center',
+                      }}
+                    >
+                      {job[key as keyof Job] || 'N/A'}
+                    </td>
+                  ) : null
+                )}
                 <td style={{ textAlign: 'center' }}>
                   <button onClick={() => handleEditJob(job)}>Edit</button>
                   <button onClick={() => handleDeleteJob(job.id)}>Delete</button>
