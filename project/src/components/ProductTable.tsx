@@ -37,6 +37,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     size: true,
   });
 
+  // Search logic
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
@@ -51,6 +52,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     setFilteredJobs(filtered);
   };
 
+  // Toggle column visibility
   const toggleColumn = (column: keyof typeof visibleColumns) => {
     setVisibleColumns((prev) => ({
       ...prev,
@@ -58,33 +60,62 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     }));
   };
 
-  const handleAddJob = () => {
+  // Add a new job
+  const handleAddJob = async () => {
     if (newJob.mfr && newJob.type_name) {
-      setJobs((prev) => [...prev, { ...newJob, id: prev.length + 1 } as Job]);
-      setFilteredJobs((prev) => [...prev, { ...newJob, id: prev.length + 1 } as Job]);
-      setNewJob({ id: jobs.length + 2 });
+      const response = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newJob),
+      });
+
+      if (response.ok) {
+        const createdJob = await response.json();
+        setJobs((prev) => [...prev, createdJob]);
+        setFilteredJobs((prev) => [...prev, createdJob]);
+        setNewJob({ id: jobs.length + 2 });
+      }
     }
   };
 
+  // Edit a job
   const handleEditJob = (job: Job) => {
     setEditingJob(job);
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editingJob) {
-      setJobs((prev) =>
-        prev.map((job) => (job.id === editingJob.id ? editingJob : job))
-      );
-      setFilteredJobs((prev) =>
-        prev.map((job) => (job.id === editingJob.id ? editingJob : job))
-      );
-      setEditingJob(null);
+      const response = await fetch('/api/jobs', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingJob),
+      });
+
+      if (response.ok) {
+        const updatedJob = await response.json();
+        setJobs((prev) =>
+          prev.map((job) => (job.id === updatedJob.id ? updatedJob : job))
+        );
+        setFilteredJobs((prev) =>
+          prev.map((job) => (job.id === updatedJob.id ? updatedJob : job))
+        );
+        setEditingJob(null);
+      }
     }
   };
 
-  const handleDeleteJob = (id: number) => {
-    setJobs((prev) => prev.filter((job) => job.id !== id));
-    setFilteredJobs((prev) => prev.filter((job) => job.id !== id));
+  // Delete a job
+  const handleDeleteJob = async (id: number) => {
+    const response = await fetch('/api/jobs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      setJobs((prev) => prev.filter((job) => job.id !== id));
+      setFilteredJobs((prev) => prev.filter((job) => job.id !== id));
+    }
   };
 
   return (
@@ -158,11 +189,14 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                       fontWeight: 'bold',
                     }}
                   >
-                    {key.toUpperCase()} {visibleColumns[key as keyof typeof visibleColumns] ? '⬆' : '⬇'}
+                    {key.toUpperCase()}{' '}
+                    {visibleColumns[key as keyof typeof visibleColumns] ? '⬆' : '⬇'}
                   </button>
                 </th>
               ))}
-              <th style={{ padding: '8px', borderBottom: '2px solid #000' }}>Actions</th>
+              <th style={{ padding: '8px', borderBottom: '2px solid #000' }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>

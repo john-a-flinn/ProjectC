@@ -7,14 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model joblist {
-  mfr          String? @db.VarChar(50)
-  type_name    String? @db.VarChar(50)
-  type_id      Int?
-  style_name   String? @db.VarChar(50)
-  style_id     String? @db.VarChar(50)
-  color_number Int?
-  color_name    String? @db.VarChar(50)
-  size         String? @db.VarChar(50)
+model Job {
   id           Int     @id @default(autoincrement())
+  mfr          String?
+  type_name    String?
+  type_id      Int?
+  style_name   String?
+  style_id     String?
+  color_number Int?
+  color_name   String?
+  size         String?
 }

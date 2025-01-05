@@ -3,7 +3,7 @@ import ProductTable from '@/components/ProductTable'; // Adjust the path as need
 
 export default async function Page() {
   // Fetch data from the joblist table
-  const joblist = await prisma.joblist.findMany();
+  const joblist = await prisma.job.findMany();
 
   return (
     <main>
