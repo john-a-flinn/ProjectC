@@ -146,21 +146,70 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         <h3>Add New Job</h3>
         {/* Col values */}
         <input
-          type="text"
-          placeholder="Manufacturer"
-          value={newJob.mfr || ''}
-          onChange={(e) =>
-            setNewJob((prev) => ({ ...prev, mfr: e.target.value }))
-          }
-        />
-        <input
-          type="text"
-          placeholder="Type Name"
-          value={newJob.type_name || ''}
-          onChange={(e) =>
-            setNewJob((prev) => ({ ...prev, type_name: e.target.value }))
-          }
-        />
+  type="text"
+  placeholder="Manufacturer"
+  value={newJob.mfr || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, mfr: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Type Name"
+  value={newJob.type_name || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, type_name: e.target.value }))
+  }
+/>
+<input
+  type="number"
+  placeholder="Type ID"
+  value={newJob.type_id || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, type_id: parseInt(e.target.value) || null }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Style Name"
+  value={newJob.style_name || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, style_name: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Style ID"
+  value={newJob.style_id || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, style_id: e.target.value }))
+  }
+/>
+<input
+  type="number"
+  placeholder="Color Number"
+  value={newJob.color_number || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, color_number: parseInt(e.target.value) || null }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Color Name"
+  value={newJob.color_name || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, color_name: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Size"
+  value={newJob.size || ''}
+  onChange={(e) =>
+    setNewJob((prev) => ({ ...prev, size: e.target.value }))
+  }
+/>
+
         <button onClick={handleAddJob}>Add Job</button>
       </div>
       <div style={{ overflowX: 'auto' }}>
@@ -240,19 +289,69 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
           <h3>Edit Job</h3>
           {/* Col values */}
           <input
-            type="text"
-            value={editingJob.mfr || ''}
-            onChange={(e) =>
-              setEditingJob((prev) => ({ ...prev!, mfr: e.target.value }))
-            }
-          />
-          <input
-            type="text"
-            value={editingJob.type_name || ''}
-            onChange={(e) =>
-              setEditingJob((prev) => ({ ...prev!, type_name: e.target.value }))
-            }
-          />
+  type="text"
+  placeholder="Manufacturer"
+  value={editingJob.mfr || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, mfr: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Type Name"
+  value={editingJob.type_name || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, type_name: e.target.value }))
+  }
+/>
+<input
+  type="number"
+  placeholder="Type ID"
+  value={editingJob.type_id || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, type_id: parseInt(e.target.value) || null }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Style Name"
+  value={editingJob.style_name || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, style_name: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Style ID"
+  value={editingJob.style_id || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, style_id: e.target.value }))
+  }
+/>
+<input
+  type="number"
+  placeholder="Color Number"
+  value={editingJob.color_number || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, color_number: parseInt(e.target.value) || null }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Color Name"
+  value={editingJob.color_name || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, color_name: e.target.value }))
+  }
+/>
+<input
+  type="text"
+  placeholder="Size"
+  value={editingJob.size || ''}
+  onChange={(e) =>
+    setEditingJob((prev) => ({ ...prev!, size: e.target.value }))
+  }
+/>
           <button onClick={handleSaveEdit}>Save</button>
           <button onClick={() => setEditingJob(null)}>Cancel</button>
         </div>
