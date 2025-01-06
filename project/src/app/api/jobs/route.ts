@@ -7,16 +7,19 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const data = await req.json();
-
   try {
+    const data = await req.json();
+    if (!data || typeof data !== 'object') {
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+    }
+
     const newJob = await prisma.job.create({
       data,
     });
-    return NextResponse.json(newJob, { status: 201 }); //Good
+    return NextResponse.json(newJob, { status: 201 });
   } catch (error) {
     console.error('Error creating job:', error);
-    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 }); // Server
+    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 });
   }
 }
 

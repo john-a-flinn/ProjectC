@@ -64,14 +64,14 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
 
   // Add new job
   const handleAddJob = async () => {
-    if (newJob.mfr && newJob.type_name) {
-      // api\jobs\route.ts
+    const { id, ...jobWithoutId } = newJob; // Exclude the `id` field
+    if (jobWithoutId.mfr && jobWithoutId.type_name) {
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newJob),
+        body: JSON.stringify(jobWithoutId),
       });
-
+  
       if (response.ok) {
         const createdJob = await response.json();
         setJobs((prev) => [...prev, createdJob]);

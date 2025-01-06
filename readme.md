@@ -1,6 +1,6 @@
 Instructions
 To search, first select your filters. If filters are not visible, they will not be considered in the search.
-Add and edit input data in the label cell. If a cell only accepts integers, it will only add numbers.
+Add and edit input data in the label cell. If a cell only accepts integers, it will only add numbers. Every cell must be filled with data or N/A.
 Delete removes the associated row.
 
 Overview
@@ -38,3 +38,4 @@ Made the filter dynamic, allowing searches to filter the results.
 Improved the visual appearance.
 Assigned new jobs the IDs of deleted jobs to maintain consistency.
 Renamed all job-related variables for better readability.
+Changed the tab name
