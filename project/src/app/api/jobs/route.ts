@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
-  const jobs = await prisma.job.findMany();
+  const jobs = await prisma.job.findMany(); // no idea why Job doesnt work
   return NextResponse.json(jobs);
 }
 
@@ -13,10 +13,10 @@ export async function POST(req: Request) {
     const newJob = await prisma.job.create({
       data,
     });
-    return NextResponse.json(newJob, { status: 201 });
+    return NextResponse.json(newJob, { status: 201 }); //Good
   } catch (error) {
     console.error('Error creating job:', error);
-    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create job' }, { status: 500 }); // Server
   }
 }
 
@@ -24,7 +24,7 @@ export async function PUT(req: Request) {
   const data = await req.json();
 
   if (!data.id) {
-    return NextResponse.json({ error: 'ID is required for update' }, { status: 400 });
+    return NextResponse.json({ error: 'ID is required for update' }, { status: 400 }); // Client
   }
 
   try {
