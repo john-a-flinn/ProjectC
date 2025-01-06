@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 
+// Type enforcement
 type Job = {
   id: number;
   mfr: string | null;
@@ -19,13 +20,17 @@ type Props = {
 };
 
 const ProductTable: React.FC<Props> = ({ joblist }) => {
+
+  // State vars
   const [jobs, setJobs] = useState<Job[]>(joblist);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredJobs, setFilteredJobs] = useState(joblist);
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [newJob, setNewJob] = useState<Partial<Job>>({
-    id: jobs.length + 1,
+    id: jobs.length + 1, 
   });
+
+  // Default visiblity
   const [visibleColumns, setVisibleColumns] = useState({
     mfr: true,
     type_name: true,
@@ -37,14 +42,15 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
     size: true,
   });
 
+  // Not cases sensitive looks at all str col
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
     const filtered = jobs.filter((job) =>
       Object.entries(job)
-        .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns])
-        .some(([_, value]) =>
+        .filter(([key]) => visibleColumns[key as keyof typeof visibleColumns]) // Filters using value doesn't work
+        .some(([_, value]) => 
           value?.toString().toLowerCase().includes(query)
         )
     );
@@ -59,18 +65,19 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
   };
 
   const handleAddJob = async () => {
+    // api\jobs\route.ts
     if (newJob.mfr && newJob.type_name) {
-      const response = await fetch('/api/jobs', {
+      const response = await fetch('/api/jobs', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newJob), // Do not include `id` here
+        body: JSON.stringify(newJob),
       });
-  
+
       if (response.ok) {
-        const createdJob = await response.json();
-        setJobs((prev) => [...prev, createdJob]);
-        setFilteredJobs((prev) => [...prev, createdJob]);
-        setNewJob({}); // Reset newJob fields
+        const createdJob = await response.json(); 
+        setJobs((prev) => [...prev, createdJob]); // Adds
+        setFilteredJobs((prev) => [...prev, createdJob]); // Updates
+        setNewJob({}); // Reset
       }
     }
   };
@@ -80,6 +87,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
   };
 
   const handleSaveEdit = async () => {
+    // api\jobs\route.ts
     if (editingJob) {
       const response = await fetch('/api/jobs', {
         method: 'PUT',
@@ -101,6 +109,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
   };
 
   const handleDeleteJob = async (id: number) => {
+    // api\jobs\route.ts
     const response = await fetch('/api/jobs', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -114,6 +123,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
   };
 
   return (
+    // Search bar
     <div style={{ margin: '20px 0' }}>
       <div style={{ marginBottom: '20px', textAlign: 'center' }}>
         <input
@@ -130,9 +140,11 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
           }}
         />
       </div>
-
+      
+      {/* Add Job Form */}
       <div style={{ marginBottom: '20px' }}>
         <h3>Add New Job</h3>
+        {/* Col values */}
         <input
           type="text"
           placeholder="Manufacturer"
@@ -151,7 +163,6 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
         />
         <button onClick={handleAddJob}>Add Job</button>
       </div>
-
       <div style={{ overflowX: 'auto' }}>
         <table
           style={{
@@ -161,8 +172,11 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
             border: '1px solid #ddd',
           }}
         >
+
+          {/* CSS for row 1 */}
           <thead>
             <tr>
+              {/* Toggle for col */}
               {Object.keys(visibleColumns).map((key) => (
                 <th
                   key={key}
@@ -191,9 +205,11 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
               </th>
             </tr>
           </thead>
+
           <tbody>
             {filteredJobs.map((job) => (
               <tr key={job.id}>
+                {/* Cell gen */}
                 {Object.keys(visibleColumns).map((key) => (
                   <td
                     key={key}
@@ -206,7 +222,7 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
                         : 'hidden',
                     }}
                   >
-                    {job[key as keyof Job] || 'N/A'}
+                    {job[key as keyof Job] || 'N/A'} {/* Null to 'N/A' */}
                   </td>
                 ))}
                 <td style={{ textAlign: 'center' }}>
@@ -218,10 +234,11 @@ const ProductTable: React.FC<Props> = ({ joblist }) => {
           </tbody>
         </table>
       </div>
-            {/* Edit Job Form */}
-            {editingJob && (
+        {/* Edit Job Form */}
+        {editingJob && (
         <div style={{ marginTop: '20px' }}>
           <h3>Edit Job</h3>
+          {/* Col values */}
           <input
             type="text"
             value={editingJob.mfr || ''}
